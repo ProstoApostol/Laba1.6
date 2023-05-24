@@ -1,0 +1,86 @@
+#include<iostream>
+#include<time.h>
+using namespace std;
+
+const int NUM = 50000;
+
+void FastCoding(int* arr, int first, int last) {
+	int middle = arr[(first + last) / 2];
+	int i = first, j = last;
+
+	do {
+		while (arr[i]< middle) {
+			i++;
+		}
+		while (arr[j] > middle) {
+			j--;
+		}
+		if (i <= j) {
+			swap(arr[i], arr[j]);
+			i++;
+			j--;
+		}
+	} while (i <= j);
+	if (j > first) {
+		FastCoding(arr, first, j);
+	}
+	if (i < last) {
+		FastCoding(arr, i, last);
+	}
+}
+
+void bubbleSort(int* arr,const int size) {
+	for (int i = 0; i < size - 1; i++) {
+		for (int j = 0; j < size - i - 1; j++) {
+			if (arr[j] > arr[j + 1]) {
+				
+				int temp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = temp;
+			}
+		}
+	}
+}
+
+int main() {
+	srand(static_cast<unsigned int>(time(0)));
+
+	int* A = new int[NUM];
+	int* B = new int[NUM];
+
+	int AllTimeFastCoding = 0;
+	int AllTimeBubbleSort = 0;
+
+	int Number = 5;
+	while (Number > 0) {
+		for (int q = 0; q < NUM; q++) {
+			A[q] = B[q] = rand() % 100;
+		}
+
+		clock_t  begt, endt;
+		begt = clock();
+		FastCoding(B, 0, NUM - 1);
+		endt = clock();      
+		AllTimeFastCoding += (endt - begt);
+		cout << "Time FastCoding: " << endt - begt << endl;
+
+		for (int q = 0; q < NUM; q++) {
+			B[q] = A[q];
+		}
+
+		clock_t  begt2, endt2;
+		begt2 = clock();
+		bubbleSort(B, NUM - 1);
+		endt2 = clock();
+		AllTimeBubbleSort += (endt2 - begt2);
+		cout << "Time bubbleSort: " << endt2 - begt2 << endl;
+
+		Number--;
+		cout << endl;
+	}
+
+	cout << "Average quick sort runtime: " << (AllTimeFastCoding / 5) << endl;
+	cout << "Average bubble sort operation time: " << (AllTimeBubbleSort / 5) << endl;
+
+	return 0;
+}
